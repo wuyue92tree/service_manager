@@ -1,0 +1,357 @@
+{% load admin_static %}<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"/>
+    <meta charset="utf-8"/>
+    <title>{% block title %}{% endblock %} | 应用服务管理平台</title>
+
+    <meta name="description" content=""/>
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0, maximum-scale=1.0"/>
+
+    <!-- bootstrap & fontawesome -->
+    <link rel="stylesheet"
+          href="{% static 'accounts/css/bootstrap.min.css' %}"/>
+    <link rel="stylesheet"
+          href="{% static 'accounts/font-awesome/4.5.0/css/font-awesome.min.css' %}"/>
+
+    <!-- toastr -->
+    <link rel="stylesheet" href="{% static 'accounts/css/toastr.css' %}"/>
+
+    <link rel="stylesheet" href="{% static 'accounts/css/sweetalert.css' %}"/>
+
+    <!-- page specific plugin styles -->
+
+    <!-- text fonts -->
+    <link rel="stylesheet"
+          href="{% static 'accounts/css/fonts.googleapis.com.css' %}"/>
+
+    <!-- ace styles -->
+    <link rel="stylesheet" href="{% static 'accounts/css/ace.min.css' %}"
+          class="ace-main-stylesheet" id="main-ace-style"/>
+
+    <!--[if lte IE 9]>
+	<link rel="stylesheet" href="{% static 'accounts/css/ace-part2.min.css' %}" class="ace-main-stylesheet" />
+	<![endif]-->
+    <link rel="stylesheet"
+          href="{% static 'accounts/css/ace-skins.min.css' %}"/>
+    <link rel="stylesheet" href="{% static 'accounts/css/ace-rtl.min.css' %}"/>
+
+    <!--[if lte IE 9]>
+	<link rel="stylesheet" href="{% static 'accounts/css/ace-ie.min.css' %}" />
+	<![endif]-->
+
+    <!-- inline styles related to this page -->
+
+    <!-- ace settings handler -->
+    <script src="{% static 'accounts/js/ace-extra.min.js' %}"></script>
+
+    <!-- HTML5shiv and Respond.js for IE8 to support HTML5 elements and media queries -->
+
+    <!--[if lte IE 8]>
+	<script src="{% static 'accounts/js/html5shiv.min.js' %}"></script>
+	<script src="{% static 'accounts/js/respond.min.js' %}"></script>
+	<![endif]-->
+</head>
+
+<body class="no-skin">
+<div id="navbar" class="navbar navbar-default          ace-save-state">
+    <div class="navbar-container ace-save-state" id="navbar-container">
+        <button type="button" class="navbar-toggle menu-toggler pull-left"
+                id="menu-toggler" data-target="#sidebar">
+            <span class="sr-only">Toggle sidebar</span>
+
+            <span class="icon-bar"></span>
+
+            <span class="icon-bar"></span>
+
+            <span class="icon-bar"></span>
+        </button>
+
+        <div class="navbar-header pull-left">
+            <a href="{% url 'accounts:index' %}" class="navbar-brand">
+                <small>
+                    <i class="fa fa-leaf"></i>
+                    应用服务管理平台
+                </small>
+            </a>
+        </div>
+
+        <div class="navbar-buttons navbar-header pull-right" role="navigation">
+            <ul class="nav ace-nav">
+
+                <li class="light-blue dropdown-modal">
+                    <a data-toggle="dropdown" href="javascript: void(0);"
+                       class="dropdown-toggle">
+                        {% if request.user.head_oauth_avatar %}
+                            <img class="nav-user-photo"
+                                 src="{{ request.user.head_oauth_avatar }}"
+                                 alt=""/>
+                        {% else %}
+                            <img class="nav-user-photo"
+                                 src="{% static 'accounts/images/avatars/user.jpg' %}"
+                                 alt="Jason's Photo"/>
+                        {% endif %}
+
+                        <span class="user-info">
+									<small>欢迎,</small>
+									{{ request.user.nickname }}
+								</span>
+
+                        <i class="ace-icon fa fa-caret-down"></i>
+                    </a>
+
+                    <ul class="user-menu dropdown-menu-right dropdown-menu dropdown-yellow dropdown-caret dropdown-close">
+                        <li>
+                            <a href="javascript: void(0);">
+                                <i class="ace-icon fa fa-cog"></i>
+                                设置
+                            </a>
+                        </li>
+
+                        <li>
+                            <a href="{% url 'accounts:profile' request.user.username %}">
+                                <i class="ace-icon fa fa-user"></i>
+                                个人资料
+                            </a>
+                        </li>
+
+                        <li class="divider"></li>
+
+                        <li>
+                            <a href="{% url 'accounts:logout' %}">
+                                <i class="ace-icon fa fa-power-off"></i>
+                                退出
+                            </a>
+                        </li>
+                    </ul>
+                </li>
+            </ul>
+        </div>
+    </div><!-- /.navbar-container -->
+</div>
+
+<div class="main-container ace-save-state" id="main-container">
+    <script type="text/javascript">
+        try {
+            ace.settings.loadState('main-container')
+        } catch (e) {
+        }
+    </script>
+
+    <div id="sidebar"
+         class="sidebar                  responsive                    ace-save-state">
+        <script type="text/javascript">
+            try {
+                ace.settings.loadState('sidebar')
+            } catch (e) {
+            }
+        </script>
+
+        <div class="sidebar-shortcuts" id="sidebar-shortcuts">
+            <div class="sidebar-shortcuts-large" id="sidebar-shortcuts-large">
+                <button class="btn btn-success">
+                    <i class="ace-icon fa fa-signal"></i>
+                </button>
+
+                <button class="btn btn-info">
+                    <i class="ace-icon fa fa-pencil"></i>
+                </button>
+
+                <button class="btn btn-warning">
+                    <i class="ace-icon fa fa-users"></i>
+                </button>
+
+                <button class="btn btn-danger">
+                    <i class="ace-icon fa fa-cogs"></i>
+                </button>
+            </div>
+
+            <div class="sidebar-shortcuts-mini" id="sidebar-shortcuts-mini">
+                <span class="btn btn-success"></span>
+
+                <span class="btn btn-info"></span>
+
+                <span class="btn btn-warning"></span>
+
+                <span class="btn btn-danger"></span>
+            </div>
+        </div><!-- /.sidebar-shortcuts -->
+
+        <ul class="nav nav-list">
+            <li class="" id="index">
+                <a href="{% url 'accounts:index' %}">
+                    <i class="menu-icon fa fa-tachometer"></i>
+                    <span class="menu-text"> 系统首页 </span>
+                </a>
+
+                <b class="arrow"></b>
+            </li>
+
+            <li class="" id="user_center">
+                <a href="javascript: void(0);" class="dropdown-toggle">
+                    <i class="menu-icon fa fa-user"></i>
+                    <span class="menu-text">
+								个人中心
+							</span>
+
+                    <b class="arrow fa fa-angle-down"></b>
+                </a>
+
+                <b class="arrow"></b>
+
+                <ul class="submenu">
+
+                    <li class="" id="profile">
+                        <a href="{% url 'accounts:profile' request.user.username %}">
+                            <i class="menu-icon fa fa-caret-right"></i>
+                            个人资料
+                        </a>
+
+                        <b class="arrow"></b>
+                    </li>
+
+                    <li class="" id="change_password">
+                        <a href="{% url 'accounts:change_password' %}">
+                            <i class="menu-icon fa fa-caret-right"></i>
+                            修改密码
+                        </a>
+
+                        <b class="arrow"></b>
+                    </li>
+
+                </ul>
+            </li>
+            <li class="" id="supervisor_manage">
+                <a href="javascript: void (0);" class="dropdown-toggle">
+                    <i class="menu-icon fa fa-exchange"></i>
+                    <span class="menu-text">
+								Supervisor管理
+							</span>
+
+                    <b class="arrow fa fa-angle-down"></b>
+                </a>
+
+                <b class="arrow"></b>
+
+                <ul class="submenu">
+
+                    <li class="" id="supervisor-host-manager">
+                        <a href="{% url 'accounts:supervisor-host-index' %}">
+                            <i class="menu-icon fa fa-caret-right"></i>
+                            主机管理
+                        </a>
+
+                        <b class="arrow"></b>
+                    </li>
+
+                    <li class="" id="supervisor-service-status">
+                        <a href="{% url 'accounts:supervisor' %}">
+                            <i class="menu-icon fa fa-caret-right"></i>
+                            服务状态
+                        </a>
+
+                        <b class="arrow"></b>
+                    </li>
+                </ul>
+            </li>
+
+
+        </ul><!-- /.nav-list -->
+
+        <div class="sidebar-toggle sidebar-collapse" id="sidebar-collapse">
+            <i id="sidebar-toggle-icon"
+               class="ace-icon fa fa-angle-double-left ace-save-state"
+               data-icon1="ace-icon fa fa-angle-double-left"
+               data-icon2="ace-icon fa fa-angle-double-right"></i>
+        </div>
+    </div>
+
+    <div class="main-content">
+        <div class="main-content-inner">
+            <div class="breadcrumbs ace-save-state" id="breadcrumbs">
+                {% block breadcrumbs %}{% endblock %}
+
+                <div class="nav-search" id="nav-search">
+                    <form class="form-search" method="get"
+                          action="{{ request.path }}">
+								<span class="input-icon">
+									<input type="text" placeholder="Search ..."
+                                           name="search"
+                                           class="nav-search-input"
+                                           id="nav-search-input"
+                                           autocomplete="off"/>
+									<i class="ace-icon fa fa-search nav-search-icon"></i>
+								</span>
+                    </form>
+                </div><!-- /.nav-search -->
+            </div>
+
+            <div class="page-content">
+                {% block content %}{% endblock %}
+            </div><!-- /.page-content -->
+        </div>
+    </div><!-- /.main-content -->
+
+    <div class="footer">
+        <div class="footer-inner">
+            <div class="footer-content">
+						<span class="bigger-120">
+							<span class="blue bolder">应用服务</span>
+							管理平台 &copy; 2017
+						</span>
+
+                &nbsp; &nbsp;
+                <span class="action-buttons">
+							<a href="javascript: void(0);">
+								<i class="ace-icon fa fa-twitter-square light-blue bigger-150"></i>
+							</a>
+
+							<a href="javascript: void(0);">
+								<i class="ace-icon fa fa-facebook-square text-primary bigger-150"></i>
+							</a>
+
+							<a href="javascript: void(0);">
+								<i class="ace-icon fa fa-rss-square orange bigger-150"></i>
+							</a>
+						</span>
+            </div>
+        </div>
+    </div>
+
+    <a href="javascript: void(0);" id="btn-scroll-up"
+       class="btn-scroll-up btn btn-sm btn-inverse">
+        <i class="ace-icon fa fa-angle-double-up icon-only bigger-110"></i>
+    </a>
+</div><!-- /.main-container -->
+
+<!-- basic scripts -->
+
+<!--[if !IE]> -->
+<script src="{% static 'accounts/js/jquery-2.1.4.min.js' %}"></script>
+
+<!-- <![endif]-->
+
+<!--[if IE]>
+<script src="{% static 'accounts/js/jquery-1.11.3.min.js' %}"></script>
+<![endif]-->
+<script type="text/javascript">
+    if ('ontouchstart' in document.documentElement) document.write("<script src='{% static "accounts/js/jquery.mobile.custom.min.js" %}'>" + "<" + "/script>");
+</script>
+<script src="{% static 'accounts/js/bootstrap.min.js' %}"></script>
+<script src="{% static 'accounts/js/jquery-ui.custom.min.js' %}"></script>
+<script src="{% static 'accounts/js/jquery.ui.touch-punch.min.js' %}"></script>
+
+<!-- page specific plugin scripts -->
+
+<!-- ace scripts -->
+<script src="{% static 'accounts/js/ace-elements.min.js' %}"></script>
+<script src="{% static 'accounts/js/ace.min.js' %}"></script>
+
+<!-- inline scripts related to this page -->
+<script src="{% static 'accounts/js/app.js' %}"></script>
+<script src="{% static 'accounts/js/toastr.js' %}"></script>
+<script src="{% static 'accounts/js/sweetalert.min.js' %}"></script>
+{% block otherjs %}{% endblock %}
+</body>
+</html>
