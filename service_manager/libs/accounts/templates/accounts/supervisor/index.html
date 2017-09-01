@@ -36,8 +36,8 @@
             <div class="widget-header widget-header-small">
                 <h6 class="widget-title">
                     <i class="ace-icon fa fa-sort"></i>
-                    {{ object.host }}:{{object.port}}
-                    <small class="text-danger">[最后刷新时间：]</small>
+                    <a target="_blank" href="http://{{ object.host }}:{{object.port}}">{{object.host }}:{{object.port}}</a>
+                    <small class="text-danger hidden-xs">[最后刷新时间：]</small>
                 </h6>
 
                 <div class="widget-toolbar">
@@ -82,74 +82,7 @@
                         </thead>
 
                         <tbody>
-                        <!--<tr>-->
-                        <!--<td class="">Alex</td>-->
 
-                        <!--<td class="hidden-480">-->
-                        <!--<a href="javascript: void(0);">alex@email.com</a>-->
-                        <!--</td>-->
-
-                        <!--<td>-->
-                        <!--<span class="label label-warning">Pending</span>-->
-                        <!--</td>-->
-                        <!--<td>-->
-                        <!--<div class="hidden-sm hidden-xs btn-group">-->
-                        <!--<a class="btn btn-xs btn-success"-->
-                        <!--href="javascript: void(0);">-->
-                        <!--<i class="ace-icon fa fa-refresh bigger-120"></i>-->
-                        <!--</a>-->
-
-                        <!--<a class="btn btn-xs btn-info"-->
-                        <!--href="javascript: void(0);">-->
-                        <!--<i class="ace-icon fa fa-pencil bigger-120"></i>-->
-                        <!--</a>-->
-
-                        <!--<a class="btn btn-xs btn-danger"-->
-                        <!--href="javascript: void(0);">-->
-                        <!--<i class="ace-icon fa fa-trash-o bigger-120"></i>-->
-                        <!--</a>-->
-
-                        <!--<button class="btn btn-xs btn-warning">-->
-                        <!--<i class="ace-icon fa fa-flag bigger-120"></i>-->
-                        <!--</button>-->
-                        <!--</div>-->
-
-                        <!--<div class="hidden-md hidden-lg">-->
-                        <!--<div class="inline pos-rel">-->
-                        <!--<button class="btn btn-minier btn-primary dropdown-toggle"-->
-                        <!--data-toggle="dropdown"-->
-                        <!--data-position="auto">-->
-                        <!--<i class="ace-icon fa fa-cog icon-only bigger-110"></i>-->
-                        <!--</button>-->
-
-                        <!--<ul class="dropdown-menu dropdown-only-icon dropdown-yellow dropdown-menu-right dropdown-caret dropdown-close">-->
-
-                        <!--<li>-->
-                        <!--<a href="javascript: void(0);"-->
-                        <!--class="tooltip-success"-->
-                        <!--data-rel="tooltip"-->
-                        <!--title="Edit">-->
-                        <!--<span class="green">-->
-                        <!--<i class="ace-icon fa fa-pencil-square-o bigger-120"></i>-->
-                        <!--</span>-->
-                        <!--</a>-->
-                        <!--</li>-->
-
-                        <!--<li>-->
-                        <!--<a href="javascript: void(0);"-->
-                        <!--class="tooltip-error"-->
-                        <!--data-rel="tooltip"-->
-                        <!--title="Delete">-->
-                        <!--<span class="red">-->
-                        <!--<i class="ace-icon fa fa-trash-o bigger-120"></i>-->
-                        <!--</span>-->
-                        <!--</a>-->
-                        <!--</li>-->
-                        <!--</ul>-->
-                        <!--</div>-->
-                        <!--</div>-->
-                        <!--</td>-->
-                        <!--</tr>-->
                         </tbody>
                     </table>
                 </div>
@@ -180,7 +113,7 @@
     }
 
     function startApp(slug, app) {
-        $(".widget-box[slug="+slug+"]").find("tr[name="+app+"]").find("td").eq(3).find("a").find("i").eq(0).attr("class",
+        $(".widget-box[slug="+slug+"]").find("tr[name="+app+"]").find("td").eq(3).find("a").find("i").eq(1).attr("class",
             "ace-icon fa fa-spinner fa-spin bigger-120");
         $.ajax({
             url: "/accounts/supervisor/service/" + slug + "/start/?app=" + app,
@@ -191,7 +124,7 @@
                 if (response_data.status === 200) {
                     SupervisorReload(slug)
                 } else {
-                    $(".widget-box[slug="+slug+"]").find("tr[name="+app+"]").find("td").eq(3).find("a").find("i").eq(2).attr("class",
+                    $(".widget-box[slug="+slug+"]").find("tr[name="+app+"]").find("td").eq(3).find("a").find("i").eq(1).attr("class",
             "ace-icon fa fa-warning bigger-120");
                 }
             }
@@ -199,8 +132,28 @@
     }
 
 
+    function restartApp(slug, app) {
+        $(".widget-box[slug=" + slug + "]").find("tr[name=" + app + "]").find("td").eq(3).find("a").find("i").eq(0).attr("class",
+            "ace-icon fa fa-spinner fa-spin bigger-120");
+        $.ajax({
+            url: "/accounts/supervisor/service/" + slug + "/restart/?app=" + app,
+            type: "get",
+            dataType: "json",
+            async: true,
+            success: function (response_data) {
+                if (response_data.status === 200) {
+                    SupervisorReload(slug)
+                } else {
+                    $(".widget-box[slug=" + slug + "]").find("tr[name=" + app + "]").find("td").eq(3).find("a").find("i").eq(0).attr("class",
+                        "ace-icon fa fa-warning bigger-120");
+                }
+            }
+        })
+    }
+
+
     function stopApp(slug, app) {
-        $(".widget-box[slug="+slug+"]").find("tr[name="+app+"]").find("td").eq(3).find("a").find("i").eq(0).attr("class",
+        $(".widget-box[slug="+slug+"]").find("tr[name="+app+"]").find("td").eq(3).find("a").find("i").eq(1).attr("class",
             "ace-icon fa fa-spinner fa-spin bigger-120");
         $.ajax({
             url: "/accounts/supervisor/service/" + slug + "/stop/?app=" + app,
@@ -211,7 +164,7 @@
                 if (response_data.status === 200) {
                     SupervisorReload(slug)
                 } else {
-                    $(".widget-box[slug="+slug+"]").find("tr[name="+app+"]").find("td").eq(3).find("a").find("i").eq(2).attr("class",
+                    $(".widget-box[slug="+slug+"]").find("tr[name="+app+"]").find("td").eq(3).find("a").find("i").eq(1).attr("class",
             "ace-icon fa fa-warning bigger-120");
                 }
             }
@@ -219,7 +172,7 @@
     }
 
     function clearlogApp(slug, app) {
-        $(".widget-box[slug="+slug+"]").find("tr[name="+app+"]").find("td").eq(3).find("a").find("i").eq(2).attr("class",
+        $(".widget-box[slug="+slug+"]").find("tr[name="+app+"]").find("td").eq(3).find("a").find("i").eq(3).attr("class",
             "ace-icon fa fa-spinner fa-spin bigger-120");
         $.ajax({
             url: "/accounts/supervisor/service/" + slug + "/clearlog/?app=" + app,
@@ -230,7 +183,7 @@
                 if (response_data.status === 200) {
                     SupervisorReload(slug)
                 } else {
-                    $(".widget-box[slug="+slug+"]").find("tr[name="+app+"]").find("td").eq(3).find("a").find("i").eq(2).attr("class",
+                    $(".widget-box[slug="+slug+"]").find("tr[name="+app+"]").find("td").eq(3).find("a").find("i").eq(3).attr("class",
             "ace-icon fa fa-warning bigger-120");
                 }
             }
@@ -247,31 +200,48 @@
         if (item.status === "running") {
             status.attr("class", "label label-success arrowed-in arrowed-in-right");
             status.html("运行中");
-            actions.eq(0).attr({
+            actions.eq(1).attr({
                 "class": "btn btn-xs btn-danger",
                 "title": "停止服务",
                 "onclick": "stopApp('" + slug + "', '" + item.name + "')"
             });
-            actions.eq(0).find("i").attr("class", "ace-icon fa fa-stop bigger-120");
+            actions.eq(1).find("i").attr("class",
+                "ace-icon fa fa-stop bigger-120");
         } else if (item.status === "stopped") {
             status.attr("class", "label label-danger arrowed-in arrowed-in-right");
             status.html("已停止");
-            actions.eq(0).attr({
+            actions.eq(1).attr({
                 "class": "btn btn-xs btn-success",
                 "title": "启动服务",
                 "onclick": "startApp('" + slug + "', '" + item.name + "')"
             });
-            actions.eq(0).find("i").attr("class", "ace-icon fa fa-play bigger-120");
+            actions.eq(1).find("i").attr("class",
+                "ace-icon fa fa-play bigger-120");
 
         } else if (item.status === "starting") {
             status.attr("class", "label label-info arrowed-in arrowed-in-right");
             status.html("正在启动");
+
+        } else if (item.status === "fatal") {
+            status.attr("class", "label label-warning arrowed-in arrowed-in-right");
+            status.html("服务异常");
         }
 
-        actions.eq(2).attr({
+//        重启按钮
+        actions.eq(0).attr({
+            "class": "btn btn-xs btn-primary",
+            "title": "重启服务",
+            "onclick": "restartApp('" + slug + "', '" + item.name + "')"
+        });
+        actions.eq(0).find("i").attr("class",
+                "ace-icon fa fa-refresh bigger-120");
+
+//        日志清空按钮
+        actions.eq(3).attr({
             "onclick": "clearlogApp('" + slug + "', '" + item.name + "')"
         });
-        actions.eq(2).find("i").attr("class", "ace-icon fa fa-trash-o bigger-120");
+        actions.eq(3).find("i").attr("class",
+            "ace-icon fa fa-trash-o bigger-120");
     }
 
 
@@ -302,7 +272,8 @@
             for (var index in res) {
                 var item = res[index];
                 tbody.append(
-                    '<tr name="' + item.name + '"><td class="">Alex</td><td class="hidden-480"><a href="javascript: void(0);">alex@email.com</a></td><td><span class="label label-warning">Pending</span></td><td><div class="hidden-sm hidden-xs btn-group"><a class="btn btn-xs btn-success" href="javascript: void(0);"><i class="ace-icon fa fa-play bigger-120"></i></a><a class="btn btn-xs btn-info" href="javascript: void(0);" title="Tail -f"><i class="ace-icon fa fa-file-o bigger-120"></i></a><a class="btn btn-xs btn-warning" href="javascript: void(0);" title="清空日志"><i class="ace-icon fa fa-trash-o bigger-120"></i></a></div><div class="hidden-md hidden-lg"><div class="inline pos-rel"><button class="btn btn-minier btn-primary dropdown-toggle" data-toggle="dropdown" data-position="auto"><i class="ace-icon fa fa-cog icon-only bigger-110"></i></button><ul class="dropdown-menu dropdown-only-icon dropdown-yellow dropdown-menu-right dropdown-caret dropdown-close"><li><a href="javascript: void(0);" class="tooltip-success" data-rel="tooltip" title="Edit"><span class="green"><i class="ace-icon fa fa-pencil-square-o bigger-120"></i></span></a></li><li><a href="javascript: void(0);" class="tooltip-error" data-rel="tooltip" title="Delete"><span class="red"><i class="ace-icon fa fa-trash-o bigger-120"></i></span></a></li></ul></div></div></td></tr>');
+                    '<tr name="' + item.name +
+                    '"><td class=""></td><td class="hidden-480"><a href="javascript: void(0);"></a></td><td><span class="label label-warning"></span></td><td><div class="hidden-sm hidden-xs btn-group"><a class="btn btn-xs btn-primary" href="javascript: void(0);"><i class="ace-icon fa fa-refresh bigger-120"></i></a><a class="btn btn-xs btn-success" href="javascript: void(0);"><i class="ace-icon fa fa-play bigger-120"></i></a><a class="btn btn-xs btn-info" href="javascript: void(0);" title="Tail -f"><i class="ace-icon fa fa-file-o bigger-120"></i></a><a class="btn btn-xs btn-warning" href="javascript: void(0);" title="清空日志"><i class="ace-icon fa fa-trash-o bigger-120"></i></a></div><div class="hidden-md hidden-lg"><div class="inline pos-rel"><button class="btn btn-minier btn-primary dropdown-toggle" data-toggle="dropdown" data-position="auto"><i class="ace-icon fa fa-cog icon-only bigger-110"></i></button><ul class="dropdown-menu dropdown-only-icon dropdown-yellow dropdown-menu-right dropdown-caret dropdown-close"><li><a href="javascript: void(0);" class="tooltip-success" data-rel="tooltip" title="Edit"><span class="green"><i class="ace-icon fa fa-pencil-square-o bigger-120"></i></span></a></li><li><a href="javascript: void(0);" class="tooltip-error" data-rel="tooltip" title="Delete"><span class="red"><i class="ace-icon fa fa-trash-o bigger-120"></i></span></a></li></ul></div></div></td></tr>');
                 Tbody(slug, tbody, item);
 
             }
