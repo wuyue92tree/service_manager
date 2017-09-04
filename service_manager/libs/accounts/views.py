@@ -238,6 +238,44 @@ class SupervisorServiceRestart(LoginRequiredMixin, DetailView):
         return HttpResponse(json.dumps(response_data))
 
 
+class SupervisorServiceRestartAll(LoginRequiredMixin, DetailView):
+    model = SupervisorConfig
+    slug_field = 'slug'
+
+    def get(self, request, *args, **kwargs):
+        response_data = dict()
+        object = self.get_object()
+        supervisor_core = SupervisorCore(host=object.host, port=object.port)
+        status = supervisor_core.restart_all()
+        if status:
+            response_data['status'] = 200
+            response_data['message'] = 'SUCCESS'
+            return HttpResponse(json.dumps(response_data))
+
+        response_data['status'] = 500
+        response_data['message'] = 'FAIL'
+        return HttpResponse(json.dumps(response_data))
+
+
+class SupervisorServiceStopAll(LoginRequiredMixin, DetailView):
+    model = SupervisorConfig
+    slug_field = 'slug'
+
+    def get(self, request, *args, **kwargs):
+        response_data = dict()
+        object = self.get_object()
+        supervisor_core = SupervisorCore(host=object.host, port=object.port)
+        status = supervisor_core.stop_all()
+        if status:
+            response_data['status'] = 200
+            response_data['message'] = 'SUCCESS'
+            return HttpResponse(json.dumps(response_data))
+
+        response_data['status'] = 500
+        response_data['message'] = 'FAIL'
+        return HttpResponse(json.dumps(response_data))
+
+
 class SupervisorServiceClearLog(LoginRequiredMixin, DetailView):
     model = SupervisorConfig
     slug_field = 'slug'
@@ -269,6 +307,20 @@ class SupervisorServiceTail(LoginRequiredMixin, DetailView):
         supervisor_core = SupervisorCore(host=object.host, port=object.port)
         log = supervisor_core.tail(app)
         return render(request, self.get_template_names(), locals())
+
+
+class SupervisorServiceTailF(LoginRequiredMixin, DetailView):
+    template_name = 'accounts/supervisor/tail_f.html'
+    model = SupervisorConfig
+    slug_field = 'slug'
+
+    def get(self, request, *args, **kwargs):
+        app = request.GET.get("app", None)
+        object = self.get_object()
+        supervisor_core = SupervisorCore(host=object.host, port=object.port)
+        log = supervisor_core.tail_f(app)
+        for item in log:
+            yield render(request, self.get_template_names(), locals())
 
 
 class SupervisorHostIndexView(LoginRequiredMixin, ListView):

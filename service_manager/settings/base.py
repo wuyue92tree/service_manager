@@ -85,7 +85,7 @@ LOGIN_URL = '/accounts/login/'
 AUTH_USER_MODEL = 'accounts.AccountUser'
 
 # session过期时间设置
-SESSION_COOKIE_AGE = 60 * 30
+SESSION_COOKIE_AGE = 60 * 30 * 5
 
 # Database
 # https://docs.djangoproject.com/en/1.11/ref/settings/#databases

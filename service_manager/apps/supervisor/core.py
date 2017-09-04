@@ -43,6 +43,20 @@ class SupervisorCore(Spider):
             return True
         return False
 
+    def restart_all(self):
+        url = self.url + "/index.html?&action=restartall"
+        res = self.html_downloader.download(url)
+        if "restarted" in res.url:
+            return True
+        return False
+
+    def stop_all(self):
+        url = self.url + "/index.html?&action=stopall"
+        res = self.html_downloader.download(url)
+        if "stopped" in res.url:
+            return True
+        return False
+
     def clearlog(self, app):
         url = self.url + "/index.html?processname=%s&action=clearlog" % app
         res = self.html_downloader.download(url)
@@ -57,6 +71,13 @@ class SupervisorCore(Spider):
         # return res
         soups = self.html_parser.parser(res.content).find('pre')
         return str(soups)
+
+    def tail_f(self, app):
+        url = self.url + "/logtail/%s" % app
+        res = self.html_downloader.download(url, stream=True)
+        return res.content
+        # soups = self.html_parser.parser(res.content).find('pre')
+        # return str(soups)
 
     def get_process_list(self):
         try:
