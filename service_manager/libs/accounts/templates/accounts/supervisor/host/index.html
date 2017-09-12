@@ -93,12 +93,12 @@
                                 <label class="pos-rel">
                                     <input type="checkbox" class="ace"
                                            name="_selected_action"
-                                           value="{{ object.slug }}"/>
+                                           value="{{ object.pk }}"/>
                                     <span class="lbl"></span>
                                 </label>
                             </td>
                             <td>
-                                <a href="{% url 'accounts:supervisor-host-change' object.slug %}">{{ object.host }}</a>
+                                <a href="{% url 'accounts:supervisor-host-change' object.pk %}">{{ object.host }}</a>
                             </td>
                             <td>{{ object.port }}</td>
                             <td>
@@ -115,17 +115,17 @@
                             <td>
                                 <div class="hidden-sm hidden-xs btn-group">
                                     <a class="btn btn-xs btn-success"
-                                       href="{% url 'accounts:supervisor-service-status-check' object.slug %}">
+                                       href="{% url 'accounts:supervisor-service-status-check' object.pk %}">
                                         <i class="ace-icon fa fa-refresh bigger-120"></i>
                                     </a>
 
                                     <a class="btn btn-xs btn-info"
-                                       href="{% url 'accounts:supervisor-host-change' object.slug %}">
+                                       href="{% url 'accounts:supervisor-host-change' object.pk %}">
                                         <i class="ace-icon fa fa-pencil bigger-120"></i>
                                     </a>
 
                                     <a class="btn btn-xs btn-danger"
-                                       href="{% url 'accounts:supervisor-host-delete' object.slug %}">
+                                       href="{% url 'accounts:supervisor-host-delete' object.pk %}">
                                         <i class="ace-icon fa fa-trash-o bigger-120"></i>
                                     </a>
 

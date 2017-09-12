@@ -44,7 +44,8 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'service_manager.libs.accounts',
-    'service_manager.apps.supervisor'
+    'service_manager.apps.Supervisor',
+    'service_manager.apps.Ansible',
 ]
 
 MIDDLEWARE = [
@@ -57,6 +58,8 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     # 激活locale
     'django.middleware.locale.LocaleMiddleware',
+    # 该middleware用以获取当前登陆用户(非request情况下)
+    'service_manager.middleware.threadlocals.ThreadLocals',
 ]
 
 ROOT_URLCONF = 'service_manager.urls'
@@ -134,9 +137,10 @@ USE_TZ = True
 STATIC_URL = '/static/'
 
 SUIT_CONFIG = {
-    'ADMIN_NAME': u'应用服务后台管理',
+    'ADMIN_NAME': u'SERVICE后台管理',
     'MENU': (
         {'app': 'supervisor', 'label': u'Supervisor管理'},
+        {'app': 'ansible', 'label': u'Ansible管理'},
         {'app': 'auth', 'models': ('accounts.AccountUser', 'group')},
         'sites',
     ),

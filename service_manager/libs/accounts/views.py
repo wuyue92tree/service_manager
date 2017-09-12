@@ -17,6 +17,7 @@ from django.urls import reverse_lazy
 from django.utils.decorators import method_decorator
 from django.views.decorators.csrf import csrf_exempt
 from django.views.generic import *
+from service_manager.middleware import threadlocals
 
 from .forms import *
 from .models import AccountUser
@@ -137,19 +138,25 @@ class ChangePasswordView(LoginRequiredMixin, TemplateView):
 ##############
 
 from .forms import SupervisorConfigForm
-from service_manager.apps.supervisor.models import Config as SupervisorConfig
-from service_manager.apps.supervisor.core import SupervisorCore
+from service_manager.apps.Supervisor.models import Config as SupervisorConfig
+from service_manager.apps.Supervisor.core import SupervisorCore
 
 
 class SupervisorIndexView(LoginRequiredMixin, ListView):
     template_name = 'accounts/supervisor/index.html'
     model = SupervisorConfig
     paginate_by = 20
+    ordering = 'create_time'
+
+    def get(self, request, *args, **kwargs):
+        self.queryset = SupervisorConfig.objects.filter(
+            owner_id=request.user.pk)
+        return super(SupervisorIndexView, self).get(request, *args,
+                                                    **kwargs)
 
 
 class SupervisorServiceStatus(LoginRequiredMixin, DetailView):
     model = SupervisorConfig
-    slug_field = 'slug'
 
     def get(self, request, *args, **kwargs):
         object = self.get_object()
@@ -160,7 +167,6 @@ class SupervisorServiceStatus(LoginRequiredMixin, DetailView):
 
 class SupervisorServiceStatusCheck(LoginRequiredMixin, DetailView):
     model = SupervisorConfig
-    slug_field = 'slug'
 
     def get(self, request, *args, **kwargs):
         response_data = dict()
@@ -180,7 +186,6 @@ class SupervisorServiceStatusCheck(LoginRequiredMixin, DetailView):
 
 class SupervisorServiceStart(LoginRequiredMixin, DetailView):
     model = SupervisorConfig
-    slug_field = 'slug'
 
     def get(self, request, *args, **kwargs):
         response_data = dict()
@@ -200,7 +205,6 @@ class SupervisorServiceStart(LoginRequiredMixin, DetailView):
 
 class SupervisorServiceStop(LoginRequiredMixin, DetailView):
     model = SupervisorConfig
-    slug_field = 'slug'
 
     def get(self, request, *args, **kwargs):
         response_data = dict()
@@ -220,7 +224,6 @@ class SupervisorServiceStop(LoginRequiredMixin, DetailView):
 
 class SupervisorServiceRestart(LoginRequiredMixin, DetailView):
     model = SupervisorConfig
-    slug_field = 'slug'
 
     def get(self, request, *args, **kwargs):
         response_data = dict()
@@ -240,7 +243,6 @@ class SupervisorServiceRestart(LoginRequiredMixin, DetailView):
 
 class SupervisorServiceRestartAll(LoginRequiredMixin, DetailView):
     model = SupervisorConfig
-    slug_field = 'slug'
 
     def get(self, request, *args, **kwargs):
         response_data = dict()
@@ -259,7 +261,6 @@ class SupervisorServiceRestartAll(LoginRequiredMixin, DetailView):
 
 class SupervisorServiceStopAll(LoginRequiredMixin, DetailView):
     model = SupervisorConfig
-    slug_field = 'slug'
 
     def get(self, request, *args, **kwargs):
         response_data = dict()
@@ -278,7 +279,6 @@ class SupervisorServiceStopAll(LoginRequiredMixin, DetailView):
 
 class SupervisorServiceClearLog(LoginRequiredMixin, DetailView):
     model = SupervisorConfig
-    slug_field = 'slug'
 
     def get(self, request, *args, **kwargs):
         response_data = dict()
@@ -299,7 +299,6 @@ class SupervisorServiceClearLog(LoginRequiredMixin, DetailView):
 class SupervisorServiceTail(LoginRequiredMixin, DetailView):
     template_name = 'accounts/supervisor/tail.html'
     model = SupervisorConfig
-    slug_field = 'slug'
 
     def get(self, request, *args, **kwargs):
         app = request.GET.get("app", None)
@@ -312,7 +311,6 @@ class SupervisorServiceTail(LoginRequiredMixin, DetailView):
 class SupervisorServiceTailF(LoginRequiredMixin, DetailView):
     template_name = 'accounts/supervisor/tail_f.html'
     model = SupervisorConfig
-    slug_field = 'slug'
 
     def get(self, request, *args, **kwargs):
         app = request.GET.get("app", None)
@@ -327,6 +325,13 @@ class SupervisorHostIndexView(LoginRequiredMixin, ListView):
     template_name = 'accounts/supervisor/host/index.html'
     model = SupervisorConfig
     paginate_by = 20
+    ordering = 'create_time'
+
+    def get(self, request, *args, **kwargs):
+        self.queryset = SupervisorConfig.objects.filter(
+            owner_id=request.user.pk)
+        return super(SupervisorHostIndexView, self).get(request, *args,
+                                                        **kwargs)
 
     def post(self, request, *args, **kwargs):
         """
@@ -345,13 +350,15 @@ class SupervisorHostIndexView(LoginRequiredMixin, ListView):
         delete = request.POST['post']
         if delete:
             action = SupervisorConfig.objects.filter(
+                owner_id=request.user.pk).filter(
                 id__in=selected_actions).delete()
             self.object_list = self.get_queryset()
             context = self.get_context_data()
             context['info'] = "所选条目删除成功。"
             return self.render_to_response(context)
         object_list = SupervisorConfig.objects.filter(
-            slug__in=selected_actions)
+            owner_id=request.user.pk).filter(
+            id__in=selected_actions)
         return render(request,
                       'accounts/supervisor/host/multi_delete.html',
                       locals())
@@ -366,7 +373,6 @@ class SupervisorHostAddView(LoginRequiredMixin, CreateView):
 class SupervisorHostDeleteView(LoginRequiredMixin, DeleteView):
     template_name = 'accounts/supervisor/host/delete.html'
     model = SupervisorConfig
-    slug_field = 'slug'
     success_url = reverse_lazy('accounts:supervisor-host-index')
 
 
@@ -374,7 +380,6 @@ class SupervisorHostChangeView(LoginRequiredMixin, UpdateView):
     template_name = 'accounts/supervisor/host/change.html'
     model = SupervisorConfig
     form_class = SupervisorConfigForm
-    slug_field = 'slug'
     success_url = reverse_lazy('accounts:supervisor-host-index')
 
 

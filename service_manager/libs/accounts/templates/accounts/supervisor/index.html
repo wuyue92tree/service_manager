@@ -32,7 +32,7 @@
          id="widget-container-col-2">
 
         <div class="widget-box widget-color-orange ui-sortable-handle"
-             id="widget-box-3" style="opacity: 1;" slug="{{ object.slug }}">
+             id="widget-box-3" style="opacity: 1;" pk="{{ object.pk }}">
             <div class="widget-header widget-header-small">
                 <h6 class="widget-title">
                     <i class="ace-icon fa fa-sort"></i>
@@ -45,17 +45,17 @@
                         <i class="ace-icon fa fa-cog"></i>
                     </a>
 
-                    <a onclick="SupervisorRestartAll('{{object.slug}}')"
+                    <a onclick="SupervisorRestartAll('{{object.pk}}')"
                        data-action="reload" title="重启所有服务">
                         <i class="ace-icon fa fa-bolt"></i>
                     </a>
 
-                    <a onclick="SupervisorStopAll('{{object.slug}}')"
+                    <a onclick="SupervisorStopAll('{{object.pk}}')"
                        data-action="reload" title="停止所有服务">
                         <i class="ace-icon fa fa-stop-circle"></i>
                     </a>
 
-                    <a onclick="SupervisorReload('{{object.slug}}')"
+                    <a onclick="SupervisorReload('{{object.pk}}')"
                        data-action="reload" title="重新加载">
                         <i class="ace-icon fa fa-refresh"></i>
                     </a>
@@ -108,10 +108,10 @@
     $('#supervisor_manage').addClass('active open');
     $('#supervisor-service-status').addClass('active');
 
-    function Supervisor(slug) {
+    function Supervisor(pk) {
         var result = "";
         $.ajax({
-            url: "/accounts/supervisor/service/" + slug + "/status/",
+            url: "/accounts/supervisor/service/" + pk + "/status/",
             type: "get",
             dataType: "json",
             async: false,
@@ -122,51 +122,51 @@
         return result;
     }
 
-    function SupervisorRestartAll(slug) {
+    function SupervisorRestartAll(pk) {
         var result = "";
         $.ajax({
-            url: "/accounts/supervisor/service/" + slug + "/restart_all/",
+            url: "/accounts/supervisor/service/" + pk + "/restart_all/",
             type: "get",
             dataType: "json",
             async: true,
             success: function (response_data) {
                 if (response_data.status === 200) {
-                    SupervisorReload(slug);
+                    SupervisorReload(pk);
                 }
             }
         });
         return result;
     }
 
-        function SupervisorStopAll(slug) {
+        function SupervisorStopAll(pk) {
         var result = "";
         $.ajax({
-            url: "/accounts/supervisor/service/" + slug + "/stop_all/",
+            url: "/accounts/supervisor/service/" + pk + "/stop_all/",
             type: "get",
             dataType: "json",
             async: true,
             success: function (response_data) {
                 if (response_data.status === 200) {
-                    SupervisorReload(slug);
+                    SupervisorReload(pk);
                 }
             }
         });
         return result;
     }
 
-    function startApp(slug, app) {
-        $(".widget-box[slug="+slug+"]").find("tr[name="+app+"]").find("td").eq(3).find("a").find("i").eq(1).attr("class",
+    function startApp(pk, app) {
+        $(".widget-box[pk="+pk+"]").find("tr[name="+app+"]").find("td").eq(3).find("a").find("i").eq(1).attr("class",
             "ace-icon fa fa-spinner fa-spin bigger-120");
         $.ajax({
-            url: "/accounts/supervisor/service/" + slug + "/start/?app=" + app,
+            url: "/accounts/supervisor/service/" + pk + "/start/?app=" + app,
             type: "get",
             dataType: "json",
             async: true,
             success: function (response_data) {
                 if (response_data.status === 200) {
-                    SupervisorReload(slug)
+                    SupervisorReload(pk)
                 } else {
-                    $(".widget-box[slug="+slug+"]").find("tr[name="+app+"]").find("td").eq(3).find("a").find("i").eq(1).attr("class",
+                    $(".widget-box[pk="+pk+"]").find("tr[name="+app+"]").find("td").eq(3).find("a").find("i").eq(1).attr("class",
             "ace-icon fa fa-warning bigger-120");
                 }
             }
@@ -174,19 +174,19 @@
     }
 
 
-    function restartApp(slug, app) {
-        $(".widget-box[slug=" + slug + "]").find("tr[name=" + app + "]").find("td").eq(3).find("a").find("i").eq(0).attr("class",
+    function restartApp(pk, app) {
+        $(".widget-box[pk=" + pk + "]").find("tr[name=" + app + "]").find("td").eq(3).find("a").find("i").eq(0).attr("class",
             "ace-icon fa fa-spinner fa-spin bigger-120");
         $.ajax({
-            url: "/accounts/supervisor/service/" + slug + "/restart/?app=" + app,
+            url: "/accounts/supervisor/service/" + pk + "/restart/?app=" + app,
             type: "get",
             dataType: "json",
             async: true,
             success: function (response_data) {
                 if (response_data.status === 200) {
-                    SupervisorReload(slug)
+                    SupervisorReload(pk)
                 } else {
-                    $(".widget-box[slug=" + slug + "]").find("tr[name=" + app + "]").find("td").eq(3).find("a").find("i").eq(0).attr("class",
+                    $(".widget-box[pk=" + pk + "]").find("tr[name=" + app + "]").find("td").eq(3).find("a").find("i").eq(0).attr("class",
                         "ace-icon fa fa-warning bigger-120");
                 }
             }
@@ -194,38 +194,38 @@
     }
 
 
-    function stopApp(slug, app) {
-        $(".widget-box[slug="+slug+"]").find("tr[name="+app+"]").find("td").eq(3).find("a").find("i").eq(1).attr("class",
+    function stopApp(pk, app) {
+        $(".widget-box[pk="+pk+"]").find("tr[name="+app+"]").find("td").eq(3).find("a").find("i").eq(1).attr("class",
             "ace-icon fa fa-spinner fa-spin bigger-120");
         $.ajax({
-            url: "/accounts/supervisor/service/" + slug + "/stop/?app=" + app,
+            url: "/accounts/supervisor/service/" + pk + "/stop/?app=" + app,
             type: "get",
             dataType: "json",
             async: true,
             success: function (response_data) {
                 if (response_data.status === 200) {
-                    SupervisorReload(slug)
+                    SupervisorReload(pk)
                 } else {
-                    $(".widget-box[slug="+slug+"]").find("tr[name="+app+"]").find("td").eq(3).find("a").find("i").eq(1).attr("class",
+                    $(".widget-box[pk="+pk+"]").find("tr[name="+app+"]").find("td").eq(3).find("a").find("i").eq(1).attr("class",
             "ace-icon fa fa-warning bigger-120");
                 }
             }
         })
     }
 
-    function clearlogApp(slug, app) {
-        $(".widget-box[slug="+slug+"]").find("tr[name="+app+"]").find("td").eq(3).find("a").find("i").eq(3).attr("class",
+    function clearlogApp(pk, app) {
+        $(".widget-box[pk="+pk+"]").find("tr[name="+app+"]").find("td").eq(3).find("a").find("i").eq(3).attr("class",
             "ace-icon fa fa-spinner fa-spin bigger-120");
         $.ajax({
-            url: "/accounts/supervisor/service/" + slug + "/clearlog/?app=" + app,
+            url: "/accounts/supervisor/service/" + pk + "/clearlog/?app=" + app,
             type: "get",
             dataType: "json",
             async: true,
             success: function (response_data) {
                 if (response_data.status === 200) {
-                    SupervisorReload(slug)
+                    SupervisorReload(pk)
                 } else {
-                    $(".widget-box[slug="+slug+"]").find("tr[name="+app+"]").find("td").eq(3).find("a").find("i").eq(3).attr("class",
+                    $(".widget-box[pk="+pk+"]").find("tr[name="+app+"]").find("td").eq(3).find("a").find("i").eq(3).attr("class",
             "ace-icon fa fa-warning bigger-120");
                 }
             }
@@ -233,8 +233,8 @@
     }
 
 
-    function Tbody(slug, tbody, item) {
-        $(tbody).find('tr[name="' + item.name + '"]').find("td").eq(0).html('<a target="_blank" href="/accounts/supervisor/service/' + slug + '/tail/?app='+ item.name + '">' + item.name + '</a>');
+    function Tbody(pk, tbody, item) {
+        $(tbody).find('tr[name="' + item.name + '"]').find("td").eq(0).html('<a target="_blank" href="/accounts/supervisor/service/' + pk + '/tail/?app='+ item.name + '">' + item.name + '</a>');
         $(tbody).find('tr[name="' + item.name + '"]').find("td").eq(1).html(item.description);
         var status = $(tbody).find('tr[name="' + item.name + '"]').find("td").eq(2).find('span');
         var actions =
@@ -245,7 +245,7 @@
             actions.eq(1).attr({
                 "class": "btn btn-xs btn-danger",
                 "title": "停止服务",
-                "onclick": "stopApp('" + slug + "', '" + item.name + "')"
+                "onclick": "stopApp('" + pk + "', '" + item.name + "')"
             });
             actions.eq(1).find("i").attr("class",
                 "ace-icon fa fa-stop bigger-120");
@@ -255,7 +255,7 @@
             actions.eq(1).attr({
                 "class": "btn btn-xs btn-success",
                 "title": "启动服务",
-                "onclick": "startApp('" + slug + "', '" + item.name + "')"
+                "onclick": "startApp('" + pk + "', '" + item.name + "')"
             });
             actions.eq(1).find("i").attr("class",
                 "ace-icon fa fa-play bigger-120");
@@ -273,7 +273,7 @@
         actions.eq(0).attr({
             "class": "btn btn-xs btn-primary",
             "title": "重启服务",
-            "onclick": "restartApp('" + slug + "', '" + item.name + "')"
+            "onclick": "restartApp('" + pk + "', '" + item.name + "')"
         });
         actions.eq(0).find("i").attr("class",
                 "ace-icon fa fa-refresh bigger-120");
@@ -281,7 +281,7 @@
         actions.eq(2).attr({
             "class": "btn btn-xs btn-info",
             "title": "Tail -f",
-            "href": '/accounts/supervisor/service/' + slug + '/tail_f/?app='
+            "href": '/accounts/supervisor/service/' + pk + '/tail_f/?app='
             + item.name,
             "target": "_blank"
         });
@@ -289,32 +289,32 @@
 //            "ace-icon fa fa-refresh bigger-120");
 //        日志清空按钮
         actions.eq(3).attr({
-            "onclick": "clearlogApp('" + slug + "', '" + item.name + "')"
+            "onclick": "clearlogApp('" + pk + "', '" + item.name + "')"
         });
         actions.eq(3).find("i").attr("class",
             "ace-icon fa fa-trash-o bigger-120");
     }
 
 
-    function SupervisorReload(slug) {
-        var res = Supervisor(slug);
-        $(".widget-box[slug='" + slug + "']").find("small").html("[最后刷新时间: " + get_now() + "]");
+    function SupervisorReload(pk) {
+        var res = Supervisor(pk);
+        $(".widget-box[pk='" + pk + "']").find("small").html("[最后刷新时间: " + get_now() + "]");
         if (res === "") {
-            $(".widget-box[slug='" + slug + "']").find("table").hide();
+            $(".widget-box[pk='" + pk + "']").find("table").hide();
         } else {
-            var tbody = $(".widget-box[slug='" + slug + "']").find("tbody");
+            var tbody = $(".widget-box[pk='" + pk + "']").find("tbody");
 //            console.log(tbody)
             for (var index in res) {
                 var item = res[index];
-                Tbody(slug, tbody, item)
+                Tbody(pk, tbody, item)
             }
         }
     }
 
 
     $(".widget-box").each(function () {
-        var slug = $(this).attr("slug");
-        var res = Supervisor(slug);
+        var pk = $(this).attr("pk");
+        var res = Supervisor(pk);
         $(this).find("small").html("[最后刷新时间: " + get_now() + "]");
         if (res === "") {
             $(this).find("table").hide();
@@ -325,7 +325,7 @@
                 tbody.append(
                     '<tr name="' + item.name +
                     '"><td class=""></td><td class="hidden-480"><a href="javascript: void(0);"></a></td><td><span class="label label-warning"></span></td><td><div class="hidden-sm hidden-xs btn-group"><a class="btn btn-xs btn-primary" href="javascript: void(0);"><i class="ace-icon fa fa-refresh bigger-120"></i></a><a class="btn btn-xs btn-success" href="javascript: void(0);"><i class="ace-icon fa fa-play bigger-120"></i></a><a class="btn btn-xs btn-info" href="javascript: void(0);" title="Tail -f"><i class="ace-icon fa fa-file-o bigger-120"></i></a><a class="btn btn-xs btn-warning" href="javascript: void(0);" title="清空日志"><i class="ace-icon fa fa-trash-o bigger-120"></i></a></div><div class="hidden-md hidden-lg"><div class="inline pos-rel"><button class="btn btn-minier btn-primary dropdown-toggle" data-toggle="dropdown" data-position="auto"><i class="ace-icon fa fa-cog icon-only bigger-110"></i></button><ul class="dropdown-menu dropdown-only-icon dropdown-yellow dropdown-menu-right dropdown-caret dropdown-close"><li><a href="javascript: void(0);" class="tooltip-success" data-rel="tooltip" title="Edit"><span class="green"><i class="ace-icon fa fa-pencil-square-o bigger-120"></i></span></a></li><li><a href="javascript: void(0);" class="tooltip-error" data-rel="tooltip" title="Delete"><span class="red"><i class="ace-icon fa fa-trash-o bigger-120"></i></span></a></li></ul></div></div></td></tr>');
-                Tbody(slug, tbody, item);
+                Tbody(pk, tbody, item);
 
             }
         }

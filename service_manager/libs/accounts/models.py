@@ -26,3 +26,8 @@ class AccountUser(AbstractUser):
 
     def get_absolute_url(self):
         return '/accounts/profile/%s/' % self.username
+
+    def save(self, *args, **kwargs):
+        if not self.nickname:
+            self.nickname = "A_%s" % self.username
+        super(AccountUser, self).save(*args, **kwargs)

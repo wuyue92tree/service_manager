@@ -4,7 +4,7 @@ from django.contrib.auth.forms import PasswordChangeForm
 from django.contrib.auth.forms import UserChangeForm, UsernameField
 
 from .models import AccountUser
-from service_manager.apps.supervisor.models import Config as SupervisorConfig
+from service_manager.apps.Supervisor.models import Config as SupervisorConfig
 
 
 class AccountUserChangeForm(UserChangeForm):
@@ -98,8 +98,10 @@ class SupervisorConfigForm(forms.ModelForm):
         self.fields['host'].widget.attrs = {'class': 'col-xs-10 col-sm-5'}
         self.fields['port'].widget.attrs = {'class': 'col-xs-10 col-sm-5'}
         self.fields['username'].widget.attrs = {'class': 'col-xs-10 col-sm-5'}
+        self.fields['password'].widget = forms.PasswordInput()
         self.fields['password'].widget.attrs = {'class': 'col-xs-10 col-sm-5'}
+        # self.fields['password'].automation = False
 
     class Meta:
         model = SupervisorConfig
-        exclude = ('slug', 'create_time')
+        exclude = ('id', 'create_time', 'owner')
