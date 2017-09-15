@@ -81,7 +81,7 @@ class SupervisorCore(Spider):
 
     def get_process_list(self):
         try:
-            res = self.html_downloader.download(self.url, timeout=1)
+            res = self.html_downloader.download(self.url, timeout=5)
             soups = self.html_parser.parser(res.content)
             lst = soups.find("tbody").find_all("tr")
 

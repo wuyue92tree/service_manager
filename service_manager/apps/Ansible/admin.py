@@ -14,4 +14,7 @@ class SupplierAdmin(admin.ModelAdmin):
 
 @admin.register(Config)
 class ConfigAdmin(admin.ModelAdmin):
-    pass
+    list_display = ('host', 'port', 'username', 'owner',
+                    'supplier', 'create_time')
+    list_filter = ('supplier__name', 'owner')
+    search_fields = ('host',)

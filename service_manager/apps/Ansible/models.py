@@ -10,20 +10,13 @@ from service_manager.middleware import threadlocals
 
 class Supplier(models.Model):
     # 主机服务商
-    name = models.CharField(max_length=255, verbose_name="主机服务商")
+    name = models.CharField(max_length=255, unique=True, verbose_name="主机服务商")
     description = models.TextField(verbose_name="服务商描述")
-    owner = models.ForeignKey(AccountUser, verbose_name=u"创建者")
 
     def __unicode__(self):
         return "%s" % self.name
 
-    def save(self, *args, **kwargs):
-        if not self.owner:
-            self.owner = threadlocals.get_current_user()
-        super(Supplier, self).save(*args, **kwargs)
-
     class Meta:
-        unique_together = ('name', 'owner')
         verbose_name = "主机服务商配置"
         verbose_name_plural = verbose_name
 
@@ -52,7 +45,7 @@ class Config(models.Model):
         return u"%s:%d" % (self.host, self.port)
 
     def save(self, *args, **kwargs):
-        if not self.owner:
+        if not self.owner_id:
             self.owner = threadlocals.get_current_user()
         super(Config, self).save(*args, **kwargs)
 

@@ -31,15 +31,16 @@
           class="ace-main-stylesheet" id="main-ace-style"/>
 
     <!--[if lte IE 9]>
-	<link rel="stylesheet" href="{% static 'accounts/css/ace-part2.min.css' %}" class="ace-main-stylesheet" />
-	<![endif]-->
+    <link rel="stylesheet" href="{% static 'accounts/css/ace-part2.min.css' %}"
+          class="ace-main-stylesheet"/>
+    <![endif]-->
     <link rel="stylesheet"
           href="{% static 'accounts/css/ace-skins.min.css' %}"/>
     <link rel="stylesheet" href="{% static 'accounts/css/ace-rtl.min.css' %}"/>
 
     <!--[if lte IE 9]>
-	<link rel="stylesheet" href="{% static 'accounts/css/ace-ie.min.css' %}" />
-	<![endif]-->
+    <link rel="stylesheet" href="{% static 'accounts/css/ace-ie.min.css' %}"/>
+    <![endif]-->
 
     <!-- inline styles related to this page -->
 
@@ -49,9 +50,9 @@
     <!-- HTML5shiv and Respond.js for IE8 to support HTML5 elements and media queries -->
 
     <!--[if lte IE 8]>
-	<script src="{% static 'accounts/js/html5shiv.min.js' %}"></script>
-	<script src="{% static 'accounts/js/respond.min.js' %}"></script>
-	<![endif]-->
+    <script src="{% static 'accounts/js/html5shiv.min.js' %}"></script>
+    <script src="{% static 'accounts/js/respond.min.js' %}"></script>
+    <![endif]-->
 </head>
 
 <body class="no-skin">
@@ -84,13 +85,13 @@
                     <a data-toggle="dropdown" href="javascript: void(0);"
                        class="dropdown-toggle">
                         {% if request.user.head_oauth_avatar %}
-                            <img class="nav-user-photo"
-                                 src="{{ request.user.head_oauth_avatar }}"
-                                 alt=""/>
+                        <img class="nav-user-photo"
+                             src="{{ request.user.head_oauth_avatar }}"
+                             alt=""/>
                         {% else %}
-                            <img class="nav-user-photo"
-                                 src="{% static 'accounts/images/avatars/user.jpg' %}"
-                                 alt="Jason's Photo"/>
+                        <img class="nav-user-photo"
+                             src="{% static 'accounts/images/avatars/user.jpg' %}"
+                             alt="Jason's Photo"/>
                         {% endif %}
 
                         <span class="user-info">
@@ -115,6 +116,14 @@
                                 个人资料
                             </a>
                         </li>
+                        {% if request.user.is_superuser %}
+                        <li>
+                            <a href="{% url 'admin:index' %}">
+                                <i class="ace-icon fa fa-cogs"></i>
+                                后台管理
+                            </a>
+                        </li>
+                        {% endif %}
 
                         <li class="divider"></li>
 
@@ -255,6 +264,61 @@
                     </li>
                 </ul>
             </li>
+            <li class="" id="ansible_manage">
+                <a href="javascript: void (0);" class="dropdown-toggle">
+                    <i class="menu-icon fa fa-star"></i>
+                    <span class="menu-text">
+								Ansible管理
+							</span>
+
+                    <b class="arrow fa fa-angle-down"></b>
+                </a>
+
+                <b class="arrow"></b>
+
+                <ul class="submenu">
+
+                    <li class="" id="ansible-host-manager">
+                        <a href="{% url 'accounts:ansible-host-index' %}">
+                            <i class="menu-icon fa fa-caret-right"></i>
+                            主机管理
+                        </a>
+
+                        <b class="arrow"></b>
+                    </li>
+                    <li class="" id="ansible-control">
+                        <a href="#" class="dropdown-toggle">
+                            <i class="menu-icon fa fa-caret-right"></i>
+
+                            Ansible控制台
+                            <b class="arrow fa fa-angle-down"></b>
+                        </a>
+
+                        <b class="arrow"></b>
+
+                        <ul class="submenu nav-show" style="display: none;">
+                            <li class="">
+                                <a href="#">
+                                    <i class="menu-icon fa fa-leaf green"></i>
+                                    Play
+                                </a>
+
+                                <b class="arrow"></b>
+                            </li>
+
+                            <li class="">
+                                <a href="#" class="dropdown-toggle">
+                                    <i class="menu-icon fa fa-pencil orange"></i>
+
+                                    Play Book
+                                </a>
+
+                                <b class="arrow"></b>
+                            </li>
+                        </ul>
+                    </li>
+                </ul>
+            </li>
 
 
         </ul><!-- /.nav-list -->
@@ -336,7 +400,7 @@
 <script src="{% static 'accounts/js/jquery-1.11.3.min.js' %}"></script>
 <![endif]-->
 <script type="text/javascript">
-    if ('ontouchstart' in document.documentElement) document.write("<script src='{% static "accounts/js/jquery.mobile.custom.min.js" %}'>" + "<" + "/script>");
+    if ('ontouchstart' in document.documentElement) document.write("<script src='{% static "accounts / js / jquery.mobile.custom.min.js" %}'>" + "<" + "/script>");
 </script>
 <script src="{% static 'accounts/js/bootstrap.min.js' %}"></script>
 <script src="{% static 'accounts/js/jquery-ui.custom.min.js' %}"></script>

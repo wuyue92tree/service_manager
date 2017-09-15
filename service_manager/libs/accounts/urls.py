@@ -25,7 +25,8 @@ urlpatterns = [
     url(r'^forgot/$', ForgotView.as_view(), name='forgot'),
     url(r'^logout/$', LogoutView.as_view(), name='logout'),
     url(r'^profile/(?P<slug>.*)/$', ProfileView.as_view(), name='profile'),
-    url(r'^change_password/$', ChangePasswordView.as_view(), name='change_password'),
+    url(r'^change_password/$', ChangePasswordView.as_view(),
+        name='change_password'),
 
     # supervisor
     url(r'supervisor/$', SupervisorIndexView.as_view(),
@@ -70,4 +71,24 @@ urlpatterns = [
     url(r'supervisor/service/(?P<pk>.*)/tail_f/$',
         SupervisorServiceTailF.as_view(),
         name='supervisor-service-tail-f'),
+
+    # ansible
+    url(r'ansible/host/index/$',
+        AnsibleHostIndexView.as_view(),
+        name='ansible-host-index'),
+    url(r'ansible/host/(?P<pk>.*)/system_info/$',
+        AnsibleHostSystemInfo.as_view(),
+        name='ansible-host-system-info'),
+    url(r'ansible/run/module/$',
+        AnsibleRunModule.as_view(),
+        name='ansible-run-module'),
+    url(r'ansible/host/add/$', AnsibleHostAddView.as_view(),
+        name='ansible-host-add'),
+    url(r'ansible/host/(?P<pk>.*)/delete/$',
+        AnsibleHostDeleteView.as_view(),
+        name='ansible-host-delete'),
+    url(r'ansible/host/(?P<pk>.*)/change/$',
+        AnsibleHostChangeView.as_view(),
+        name='ansible-host-change'),
+
 ]

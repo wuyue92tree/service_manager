@@ -5,6 +5,7 @@ from django.contrib.auth.forms import UserChangeForm, UsernameField
 
 from .models import AccountUser
 from service_manager.apps.Supervisor.models import Config as SupervisorConfig
+from service_manager.apps.Ansible.models import Config as AnsibleConfig
 
 
 class AccountUserChangeForm(UserChangeForm):
@@ -97,11 +98,35 @@ class SupervisorConfigForm(forms.ModelForm):
         super(SupervisorConfigForm, self).__init__(*args, **kwargs)
         self.fields['host'].widget.attrs = {'class': 'col-xs-10 col-sm-5'}
         self.fields['port'].widget.attrs = {'class': 'col-xs-10 col-sm-5'}
-        self.fields['username'].widget.attrs = {'class': 'col-xs-10 col-sm-5'}
+        self.fields['username'].widget.attrs = {
+            'class': 'col-xs-10 col-sm-5', 'autocomplete': "off"}
         self.fields['password'].widget = forms.PasswordInput()
-        self.fields['password'].widget.attrs = {'class': 'col-xs-10 col-sm-5'}
-        # self.fields['password'].automation = False
+        self.fields['password'].widget.attrs = {
+            'class': 'col-xs-10 col-sm-5', 'autocomplete': "off"}
 
     class Meta:
         model = SupervisorConfig
+        exclude = ('id', 'create_time', 'owner')
+
+
+###########
+# Ansible #
+###########
+
+
+class AnsibleConfigForm(forms.ModelForm):
+    def __init__(self, *args, **kwargs):
+        super(AnsibleConfigForm, self).__init__(*args, **kwargs)
+        self.fields['host'].widget.attrs = {'class': 'col-xs-10 col-sm-5'}
+        self.fields['port'].widget.attrs = {'class': 'col-xs-10 col-sm-5'}
+        self.fields['supplier'].widget.attrs = {'class': 'col-xs-10 col-sm-5'}
+        self.fields['platform'].widget.attrs = {'class': 'col-xs-10 col-sm-5'}
+        self.fields['username'].widget.attrs = {
+            'class': 'col-xs-10 col-sm-5', 'autocomplete': "off"}
+        self.fields['password'].widget = forms.PasswordInput()
+        self.fields['password'].widget.attrs = {
+            'class': 'col-xs-10 col-sm-5', 'autocomplete': "off"}
+
+    class Meta:
+        model = AnsibleConfig
         exclude = ('id', 'create_time', 'owner')

@@ -341,6 +341,8 @@ class SupervisorHostIndexView(LoginRequiredMixin, ListView):
         :param kwargs:
         :return:
         """
+        self.queryset = SupervisorConfig.objects.filter(
+            owner_id=request.user.pk)
         selected_actions = request.POST.getlist('_selected_action')
         if not selected_actions:
             self.object_list = self.get_queryset()
@@ -383,3 +385,139 @@ class SupervisorHostChangeView(LoginRequiredMixin, UpdateView):
     success_url = reverse_lazy('accounts:supervisor-host-index')
 
 
+###########
+# ansible #
+###########
+
+from service_manager.apps.Ansible.models import Config as AnsibleConfig
+from service_manager.apps.Ansible.ansible_api import AnsibleAPI
+
+
+def pre_resources(resources):
+    res_list = []
+    for resource in resources:
+        res = dict()
+        res['hostname'] = resource.host
+        res['username'] = resource.username
+        res['password'] = resource.password
+        res['port'] = resource.port
+        res_list.append(res)
+    return res_list
+
+
+def deal_ansible_res(res, host):
+    response_data = dict()
+    if res.get("success").get(host):
+        response_data['code'] = 200
+        response_data['data'] = res.get("success").get(host)
+    elif res.get("failed").get(host):
+        response_data['code'] = 500
+        response_data['msg'] = res.get("failed").get(host)
+    elif res.get("unreachable").get(host):
+        response_data['code'] = 400
+        response_data['msg'] = res.get("unreachable").get(host)
+    return response_data
+
+
+class AnsibleHostIndexView(LoginRequiredMixin, ListView):
+    template_name = 'accounts/ansible/host/index.html'
+    model = AnsibleConfig
+    paginate_by = 20
+    ordering = 'create_time'
+
+    def get(self, request, *args, **kwargs):
+        self.queryset = AnsibleConfig.objects.filter(
+            owner_id=request.user.pk)
+        return super(AnsibleHostIndexView, self).get(request, *args,
+                                                     **kwargs)
+
+    def post(self, request, *args, **kwargs):
+        """
+        实现批量删除功能
+        :param request:
+        :param args:
+        :param kwargs:
+        :return:
+        """
+        self.queryset = AnsibleConfig.objects.filter(
+            owner_id=request.user.pk)
+        selected_actions = request.POST.getlist('_selected_action')
+        if not selected_actions:
+            self.object_list = self.get_queryset()
+            context = self.get_context_data()
+            context['warning'] = "条目必须选中以对其进行操作。没有任何条目被更改。"
+            return self.render_to_response(context)
+        delete = request.POST['post']
+        if delete:
+            action = AnsibleConfig.objects.filter(
+                owner_id=request.user.pk).filter(
+                id__in=selected_actions).delete()
+            self.object_list = self.get_queryset()
+            context = self.get_context_data()
+            context['info'] = "所选条目删除成功。"
+            return self.render_to_response(context)
+        object_list = AnsibleConfig.objects.filter(
+            owner_id=request.user.pk).filter(
+            id__in=selected_actions)
+        return render(request,
+                      'accounts/ansible/host/multi_delete.html',
+                      locals())
+
+
+class AnsibleHostSystemInfo(LoginRequiredMixin, DetailView):
+    model = AnsibleConfig
+    slug_field = 'pk'
+
+    def get(self, request, *args, **kwargs):
+        resources = self.get_queryset().filter(owner_id=request.user.pk)
+        ansible_api = AnsibleAPI(pre_resources(resources))
+        ansible_api.run(['%s' % self.get_object().host], 'setup', '')
+        res = deal_ansible_res(ansible_api.get_result(),
+                               self.get_object().host)
+        return HttpResponse(json.dumps(res))
+
+
+class AnsibleRunModule(LoginRequiredMixin, ListView):
+    model = AnsibleConfig
+
+    def get(self, request, *args, **kwargs):
+        response_data = dict()
+        module = request.GET.get('module', '')
+        module_args = request.GET.get('module_args', '')
+        host_list = request.GET.get('host_list', '')
+
+        if not module or not host_list:
+            response_data['code'] = 500
+            response_data['msg'] = "Insufficient parameters."
+            return HttpResponse(json.dumps(response_data))
+
+        host_list = host_list.split(',')
+        print(host_list)
+
+        resources = self.get_queryset().filter(owner_id=request.user.pk)
+        ansible_api = AnsibleAPI(pre_resources(resources))
+        ansible_api.run(host_list, module, module_args)
+        res = ansible_api.get_result()
+        response_data['code'] = 200
+        response_data['msg'] = "success"
+        response_data['data'] = res
+        return HttpResponse(json.dumps(response_data))
+
+
+class AnsibleHostAddView(LoginRequiredMixin, CreateView):
+    template_name = 'accounts/ansible/host/add.html'
+    form_class = AnsibleConfigForm
+    success_url = reverse_lazy('accounts:ansible-host-index')
+
+
+class AnsibleHostDeleteView(LoginRequiredMixin, DeleteView):
+    template_name = 'accounts/ansible/host/delete.html'
+    model = AnsibleConfig
+    success_url = reverse_lazy('accounts:ansible-host-index')
+
+
+class AnsibleHostChangeView(LoginRequiredMixin, UpdateView):
+    template_name = 'accounts/ansible/host/change.html'
+    model = AnsibleConfig
+    form_class = AnsibleConfigForm
+    success_url = reverse_lazy('accounts:ansible-host-index')
