@@ -27,11 +27,11 @@ from .models import AccountUser
 
 
 class IndexView(LoginRequiredMixin, TemplateView):
-    template_name = 'accounts/index.html'
+    template_name = 'service_manager/index.html'
 
 
 class LoginView(TemplateView):
-    template_name = 'accounts/auth/login.html'
+    template_name = 'service_manager/auth/login.html'
 
     @method_decorator(csrf_exempt)
     def dispatch(self, request, *args, **kwargs):
@@ -69,7 +69,7 @@ class LoginView(TemplateView):
 
 
 class RegisterView(TemplateView):
-    template_name = 'accounts/auth/register.html'
+    template_name = 'service_manager/auth/register.html'
 
     @method_decorator(csrf_exempt)
     def dispatch(self, request, *args, **kwargs):
@@ -101,7 +101,7 @@ class RegisterView(TemplateView):
 
 
 class ForgotView(TemplateView):
-    template_name = 'accounts/auth/forgot.html'
+    template_name = 'service_manager/auth/forgot.html'
 
 
 class LogoutView(View):
@@ -111,14 +111,14 @@ class LogoutView(View):
 
 
 class ProfileView(LoginRequiredMixin, UpdateView):
-    template_name = 'accounts/auth/profile.html'
+    template_name = 'service_manager/auth/profile.html'
     model = AccountUser
     form_class = ProfileForm
     slug_field = 'username'
 
 
 class ChangePasswordView(LoginRequiredMixin, TemplateView):
-    template_name = 'accounts/auth/change_password.html'
+    template_name = 'service_manager/auth/change_password.html'
 
     def post(self, request, *args, **kwargs):
         form = ChangePasswordForm(self.request.user, request.POST)
@@ -143,7 +143,7 @@ from service_manager.apps.Supervisor.core import SupervisorCore
 
 
 class SupervisorIndexView(LoginRequiredMixin, ListView):
-    template_name = 'accounts/supervisor/index.html'
+    template_name = 'service_manager/supervisor/index.html'
     model = SupervisorConfig
     paginate_by = 20
     ordering = 'create_time'
@@ -297,7 +297,7 @@ class SupervisorServiceClearLog(LoginRequiredMixin, DetailView):
 
 
 class SupervisorServiceTail(LoginRequiredMixin, DetailView):
-    template_name = 'accounts/supervisor/tail.html'
+    template_name = 'service_manager/supervisor/tail.html'
     model = SupervisorConfig
 
     def get(self, request, *args, **kwargs):
@@ -309,7 +309,7 @@ class SupervisorServiceTail(LoginRequiredMixin, DetailView):
 
 
 class SupervisorServiceTailF(LoginRequiredMixin, DetailView):
-    template_name = 'accounts/supervisor/tail_f.html'
+    template_name = 'service_manager/supervisor/tail_f.html'
     model = SupervisorConfig
 
     def get(self, request, *args, **kwargs):
@@ -322,7 +322,7 @@ class SupervisorServiceTailF(LoginRequiredMixin, DetailView):
 
 
 class SupervisorHostIndexView(LoginRequiredMixin, ListView):
-    template_name = 'accounts/supervisor/host/index.html'
+    template_name = 'service_manager/supervisor/host/index.html'
     model = SupervisorConfig
     paginate_by = 20
     ordering = 'create_time'
@@ -362,24 +362,24 @@ class SupervisorHostIndexView(LoginRequiredMixin, ListView):
             owner_id=request.user.pk).filter(
             id__in=selected_actions)
         return render(request,
-                      'accounts/supervisor/host/multi_delete.html',
+                      'service_manager/supervisor/host/multi_delete.html',
                       locals())
 
 
 class SupervisorHostAddView(LoginRequiredMixin, CreateView):
-    template_name = 'accounts/supervisor/host/add.html'
+    template_name = 'service_manager/supervisor/host/add.html'
     form_class = SupervisorConfigForm
     success_url = reverse_lazy('accounts:supervisor-host-index')
 
 
 class SupervisorHostDeleteView(LoginRequiredMixin, DeleteView):
-    template_name = 'accounts/supervisor/host/delete.html'
+    template_name = 'service_manager/supervisor/host/delete.html'
     model = SupervisorConfig
     success_url = reverse_lazy('accounts:supervisor-host-index')
 
 
 class SupervisorHostChangeView(LoginRequiredMixin, UpdateView):
-    template_name = 'accounts/supervisor/host/change.html'
+    template_name = 'service_manager/supervisor/host/change.html'
     model = SupervisorConfig
     form_class = SupervisorConfigForm
     success_url = reverse_lazy('accounts:supervisor-host-index')
@@ -420,7 +420,7 @@ def deal_ansible_res(res, host):
 
 
 class AnsibleHostIndexView(LoginRequiredMixin, ListView):
-    template_name = 'accounts/ansible/host/index.html'
+    template_name = 'service_manager/ansible/host/index.html'
     model = AnsibleConfig
     paginate_by = 20
     ordering = 'create_time'
@@ -460,7 +460,7 @@ class AnsibleHostIndexView(LoginRequiredMixin, ListView):
             owner_id=request.user.pk).filter(
             id__in=selected_actions)
         return render(request,
-                      'accounts/ansible/host/multi_delete.html',
+                      'service_manager/ansible/host/multi_delete.html',
                       locals())
 
 
@@ -505,19 +505,19 @@ class AnsibleRunModule(LoginRequiredMixin, ListView):
 
 
 class AnsibleHostAddView(LoginRequiredMixin, CreateView):
-    template_name = 'accounts/ansible/host/add.html'
+    template_name = 'service_manager/ansible/host/add.html'
     form_class = AnsibleConfigForm
     success_url = reverse_lazy('accounts:ansible-host-index')
 
 
 class AnsibleHostDeleteView(LoginRequiredMixin, DeleteView):
-    template_name = 'accounts/ansible/host/delete.html'
+    template_name = 'service_manager/ansible/host/delete.html'
     model = AnsibleConfig
     success_url = reverse_lazy('accounts:ansible-host-index')
 
 
 class AnsibleHostChangeView(LoginRequiredMixin, UpdateView):
-    template_name = 'accounts/ansible/host/change.html'
+    template_name = 'service_manager/ansible/host/change.html'
     model = AnsibleConfig
     form_class = AnsibleConfigForm
     success_url = reverse_lazy('accounts:ansible-host-index')

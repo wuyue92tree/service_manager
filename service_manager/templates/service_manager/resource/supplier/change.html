@@ -1,0 +1,122 @@
+{% extends "service_manager/base.html" %}
+{% block title %}更新主机{% endblock %}
+
+{% block breadcrumbs %}
+<ul class="breadcrumb">
+    <li>
+        <i class="ace-icon fa fa-home home-icon"></i>
+        <a href="{% url 'accounts:index' %}">系统首页</a>
+    </li>
+    <li>
+        <a href="javascript: void(0);">Supervisor管理</a>
+    </li>
+    <li>
+        <a href="{% url 'accounts:supervisor-host-index' %}">主机管理</a>
+    </li>
+    <li class="active">
+        更新主机
+    </li>
+</ul><!-- /.breadcrumb -->
+{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <h1>更新主机
+        <small>
+            <i class="ace-icon fa fa-angle-double-right"></i>
+            Host Edit
+        </small>
+    </h1>
+</div>
+
+<div class="row">
+    <div class="col-xs-12">
+        {% if form.non_field_errors %}
+        <div class="clearfix">
+            <div class="alert alert-danger no-margin alert-dismissable">
+                <button type="button" class="close" data-dismiss="alert">
+                    <i class="ace-icon fa fa-times"></i>
+                </button>
+
+                <i class="ace-icon fa fa-exclamation-circle bigger-120 red"></i>
+                {{ form.non_field_errors.0 }}
+            </div>
+        </div>
+
+        <div class="hr dotted"></div>
+        {% endif %}
+
+        <form class="form-horizontal" role="form" method="post">
+            {% csrf_token %}
+
+            <div class="form-group">
+                <label class="col-sm-3 control-label no-padding-right"> {{ form.host.label }} </label>
+
+                <div class="col-sm-9">
+                    {{ form.host }}
+                    <span class="help-inline col-xs-12 col-sm-7">
+                        <span class="middle red">{{ form.host.errors.0 }}</span>
+                    </span>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label class="col-sm-3 control-label no-padding-right"> {{ form.port.label }} </label>
+
+                <div class="col-sm-9">
+                    {{ form.port }}
+                    <span class="help-inline col-xs-12 col-sm-7">
+                        <span class="middle red">{{ form.port.errors.0 }}</span>
+                    </span>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label class="col-sm-3 control-label no-padding-right"> {{ form.username.label }} </label>
+
+                <div class="col-sm-9">
+                    {{ form.username }}
+                    <span class="help-inline col-xs-12 col-sm-7">
+                        <span class="middle red">{{ form.username.errors.0 }}</span>
+                    </span>
+                </div>
+
+            </div>
+
+            <div class="form-group">
+                <label class="col-sm-3 control-label no-padding-right"> {{ form.password.label }} </label>
+
+                <div class="col-sm-9">
+                    {{ form.password }}
+                    <span class="help-inline col-xs-12 col-sm-7">
+                        <span class="middle red">{{ form.password.errors.0 }}</span>
+                    </span>
+                </div>
+            </div>
+
+            <div class="clearfix form-actions">
+                <div class="col-md-offset-2 col-md-10">
+                    <button class="btn btn-info" type="submit">
+                        <i class="ace-icon fa fa-check bigger-110"></i>
+                        提交
+                    </button>
+                    <span class="help-inline red">
+                        {% if notice %}
+                        <i class="fa fa-exclamation-circle"></i>
+                        {% endif %}
+                        {{ notice }}
+                    </span>
+                </div>
+            </div>
+        </form>
+
+    </div>
+</div>
+{% endblock %}
+
+{% block otherjs %}
+<script>
+    $('#supervisor_manage').addClass('active open');
+    $('#supervisor-host-manager').addClass('active');
+</script>
+{%endblock%}

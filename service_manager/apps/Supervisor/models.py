@@ -2,6 +2,7 @@
 from __future__ import unicode_literals
 
 from django.db import models
+from service_manager.apps.Resource.models import Host
 from service_manager.libs.accounts.models import AccountUser
 from service_manager.middleware import threadlocals
 
@@ -10,7 +11,8 @@ from service_manager.middleware import threadlocals
 
 
 class Config(models.Model):
-    host = models.CharField(max_length=255, verbose_name=u"主机地址")
+    host = models.ForeignKey(Host, related_name="supervisor_host",
+                             verbose_name=u"主机地址")
     port = models.IntegerField(default=9001, verbose_name=u"端口")
     username = models.CharField(max_length=255, blank=True, null=True,
                                 verbose_name=u"用户名")
@@ -20,7 +22,7 @@ class Config(models.Model):
                               related_name="supervisor_config")
     create_time = models.DateTimeField(auto_now=True, verbose_name=u"加入时间")
 
-    def __unicode__(self):
+    def __str__(self):
         return u"%s:%d" % (self.host, self.port)
 
     def save(self, *args, **kwargs):

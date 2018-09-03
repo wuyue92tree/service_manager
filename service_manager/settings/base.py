@@ -1,7 +1,7 @@
 #! /usr/bin/env python
 # -*- coding: utf-8 -*-
 # Author: wuyue
-# Email: wuyue@mofanghr.com
+# Email: wuyue92tree@163.com
 
 
 """
@@ -44,6 +44,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'service_manager.libs.accounts',
+    'service_manager.apps.Resource',
     'service_manager.apps.Supervisor',
     'service_manager.apps.Ansible',
 ]
@@ -67,7 +68,7 @@ ROOT_URLCONF = 'service_manager.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': [os.path.join(BASE_DIR, 'service_manager/templates')],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -139,6 +140,7 @@ STATIC_URL = '/static/'
 SUIT_CONFIG = {
     'ADMIN_NAME': u'SERVICE后台管理',
     'MENU': (
+        {'app': 'resource', 'label': u'资产管理'},
         {'app': 'supervisor', 'label': u'Supervisor管理'},
         {'app': 'ansible', 'label': u'Ansible管理'},
         {'app': 'auth', 'models': ('accounts.AccountUser', 'group')},

@@ -119,8 +119,6 @@ class AnsibleConfigForm(forms.ModelForm):
         super(AnsibleConfigForm, self).__init__(*args, **kwargs)
         self.fields['host'].widget.attrs = {'class': 'col-xs-10 col-sm-5'}
         self.fields['port'].widget.attrs = {'class': 'col-xs-10 col-sm-5'}
-        self.fields['supplier'].widget.attrs = {'class': 'col-xs-10 col-sm-5'}
-        self.fields['platform'].widget.attrs = {'class': 'col-xs-10 col-sm-5'}
         self.fields['username'].widget.attrs = {
             'class': 'col-xs-10 col-sm-5', 'autocomplete': "off"}
         self.fields['password'].widget = forms.PasswordInput()

@@ -7,14 +7,9 @@ from .models import *
 
 # Register your models here.
 
-@admin.register(Supplier)
-class SupplierAdmin(admin.ModelAdmin):
-    pass
-
 
 @admin.register(Config)
 class ConfigAdmin(admin.ModelAdmin):
-    list_display = ('host', 'port', 'username', 'owner',
-                    'supplier', 'create_time')
-    list_filter = ('supplier__name', 'owner')
+    list_display = ('host', 'port', 'username', 'owner', 'create_time')
+    list_filter = ('owner',)
     search_fields = ('host',)
