@@ -27,11 +27,11 @@ from .models import AccountUser
 
 
 class IndexView(LoginRequiredMixin, TemplateView):
-    template_name = 'service_manager/index.html'
+    template_name = 'service_manager/accounts/index.html'
 
 
 class LoginView(TemplateView):
-    template_name = 'service_manager/auth/login.html'
+    template_name = 'service_manager/accounts/login.html'
 
     @method_decorator(csrf_exempt)
     def dispatch(self, request, *args, **kwargs):
@@ -69,7 +69,7 @@ class LoginView(TemplateView):
 
 
 class RegisterView(TemplateView):
-    template_name = 'service_manager/auth/register.html'
+    template_name = 'service_manager/accounts/register.html'
 
     @method_decorator(csrf_exempt)
     def dispatch(self, request, *args, **kwargs):
@@ -101,7 +101,7 @@ class RegisterView(TemplateView):
 
 
 class ForgotView(TemplateView):
-    template_name = 'service_manager/auth/forgot.html'
+    template_name = 'service_manager/accounts/forgot.html'
 
 
 class LogoutView(View):
@@ -111,14 +111,14 @@ class LogoutView(View):
 
 
 class ProfileView(LoginRequiredMixin, UpdateView):
-    template_name = 'service_manager/auth/profile.html'
+    template_name = 'service_manager/accounts/profile.html'
     model = AccountUser
     form_class = ProfileForm
     slug_field = 'username'
 
 
 class ChangePasswordView(LoginRequiredMixin, TemplateView):
-    template_name = 'service_manager/auth/change_password.html'
+    template_name = 'service_manager/accounts/change_password.html'
 
     def post(self, request, *args, **kwargs):
         form = ChangePasswordForm(self.request.user, request.POST)
@@ -143,7 +143,7 @@ from service_manager.apps.Supervisor.core import SupervisorCore
 
 
 class SupervisorIndexView(LoginRequiredMixin, ListView):
-    template_name = 'service_manager/supervisor/index.html'
+    template_name = 'service_manager/accounts/supervisor/index.html'
     model = SupervisorConfig
     paginate_by = 20
     ordering = 'create_time'
@@ -160,7 +160,9 @@ class SupervisorServiceStatus(LoginRequiredMixin, DetailView):
 
     def get(self, request, *args, **kwargs):
         object = self.get_object()
-        supervisor_core = SupervisorCore(host=object.host, port=object.port)
+        supervisor_core = SupervisorCore(host=object.host, port=object.port,
+                                         username=object.username,
+                                         password=object.password)
         status = supervisor_core.get_process_list()
         return HttpResponse(status)
 
@@ -171,7 +173,9 @@ class SupervisorServiceStatusCheck(LoginRequiredMixin, DetailView):
     def get(self, request, *args, **kwargs):
         response_data = dict()
         object = self.get_object()
-        supervisor_core = SupervisorCore(host=object.host, port=object.port)
+        supervisor_core = SupervisorCore(host=object.host, port=object.port,
+                                         username=object.username,
+                                         password=object.password)
         status = supervisor_core.status()
 
         if status:
@@ -191,7 +195,9 @@ class SupervisorServiceStart(LoginRequiredMixin, DetailView):
         response_data = dict()
         app = request.GET.get("app", None)
         object = self.get_object()
-        supervisor_core = SupervisorCore(host=object.host, port=object.port)
+        supervisor_core = SupervisorCore(host=object.host, port=object.port,
+                                         username=object.username,
+                                         password=object.password)
         status = supervisor_core.start(app)
         if status:
             response_data['status'] = 200
@@ -210,7 +216,9 @@ class SupervisorServiceStop(LoginRequiredMixin, DetailView):
         response_data = dict()
         app = request.GET.get("app", None)
         object = self.get_object()
-        supervisor_core = SupervisorCore(host=object.host, port=object.port)
+        supervisor_core = SupervisorCore(host=object.host, port=object.port,
+                                         username=object.username,
+                                         password=object.password)
         status = supervisor_core.stop(app)
         if status:
             response_data['status'] = 200
@@ -229,7 +237,9 @@ class SupervisorServiceRestart(LoginRequiredMixin, DetailView):
         response_data = dict()
         app = request.GET.get("app", None)
         object = self.get_object()
-        supervisor_core = SupervisorCore(host=object.host, port=object.port)
+        supervisor_core = SupervisorCore(host=object.host, port=object.port,
+                                         username=object.username,
+                                         password=object.password)
         status = supervisor_core.restart(app)
         if status:
             response_data['status'] = 200
@@ -247,7 +257,9 @@ class SupervisorServiceRestartAll(LoginRequiredMixin, DetailView):
     def get(self, request, *args, **kwargs):
         response_data = dict()
         object = self.get_object()
-        supervisor_core = SupervisorCore(host=object.host, port=object.port)
+        supervisor_core = SupervisorCore(host=object.host, port=object.port,
+                                         username=object.username,
+                                         password=object.password)
         status = supervisor_core.restart_all()
         if status:
             response_data['status'] = 200
@@ -265,7 +277,9 @@ class SupervisorServiceStopAll(LoginRequiredMixin, DetailView):
     def get(self, request, *args, **kwargs):
         response_data = dict()
         object = self.get_object()
-        supervisor_core = SupervisorCore(host=object.host, port=object.port)
+        supervisor_core = SupervisorCore(host=object.host, port=object.port,
+                                         username=object.username,
+                                         password=object.password)
         status = supervisor_core.stop_all()
         if status:
             response_data['status'] = 200
@@ -284,7 +298,9 @@ class SupervisorServiceClearLog(LoginRequiredMixin, DetailView):
         response_data = dict()
         app = request.GET.get("app", None)
         object = self.get_object()
-        supervisor_core = SupervisorCore(host=object.host, port=object.port)
+        supervisor_core = SupervisorCore(host=object.host, port=object.port,
+                                         username=object.username,
+                                         password=object.password)
         status = supervisor_core.clearlog(app)
         if status:
             response_data['status'] = 200
@@ -297,32 +313,36 @@ class SupervisorServiceClearLog(LoginRequiredMixin, DetailView):
 
 
 class SupervisorServiceTail(LoginRequiredMixin, DetailView):
-    template_name = 'service_manager/supervisor/tail.html'
+    template_name = 'service_manager/accounts/supervisor/tail.html'
     model = SupervisorConfig
 
     def get(self, request, *args, **kwargs):
         app = request.GET.get("app", None)
         object = self.get_object()
-        supervisor_core = SupervisorCore(host=object.host, port=object.port)
+        supervisor_core = SupervisorCore(host=object.host, port=object.port,
+                                         username=object.username,
+                                         password=object.password)
         log = supervisor_core.tail(app)
         return render(request, self.get_template_names(), locals())
 
 
 class SupervisorServiceTailF(LoginRequiredMixin, DetailView):
-    template_name = 'service_manager/supervisor/tail_f.html'
+    template_name = 'service_manager/accounts/supervisor/tail_f.html'
     model = SupervisorConfig
 
     def get(self, request, *args, **kwargs):
         app = request.GET.get("app", None)
         object = self.get_object()
-        supervisor_core = SupervisorCore(host=object.host, port=object.port)
+        supervisor_core = SupervisorCore(host=object.host, port=object.port,
+                                         username=object.username,
+                                         password=object.password)
         log = supervisor_core.tail_f(app)
         for item in log:
             yield render(request, self.get_template_names(), locals())
 
 
 class SupervisorHostIndexView(LoginRequiredMixin, ListView):
-    template_name = 'service_manager/supervisor/host/index.html'
+    template_name = 'service_manager/accounts/supervisor/host/index.html'
     model = SupervisorConfig
     paginate_by = 20
     ordering = 'create_time'
@@ -361,25 +381,26 @@ class SupervisorHostIndexView(LoginRequiredMixin, ListView):
         object_list = SupervisorConfig.objects.filter(
             owner_id=request.user.pk).filter(
             id__in=selected_actions)
-        return render(request,
-                      'service_manager/supervisor/host/multi_delete.html',
-                      locals())
+        return render(
+            request,
+            'service_manager/accounts/supervisor/host/multi_delete.html',
+            locals())
 
 
 class SupervisorHostAddView(LoginRequiredMixin, CreateView):
-    template_name = 'service_manager/supervisor/host/add.html'
+    template_name = 'service_manager/accounts/supervisor/host/add.html'
     form_class = SupervisorConfigForm
     success_url = reverse_lazy('accounts:supervisor-host-index')
 
 
 class SupervisorHostDeleteView(LoginRequiredMixin, DeleteView):
-    template_name = 'service_manager/supervisor/host/delete.html'
+    template_name = 'service_manager/accounts/supervisor/host/delete.html'
     model = SupervisorConfig
     success_url = reverse_lazy('accounts:supervisor-host-index')
 
 
 class SupervisorHostChangeView(LoginRequiredMixin, UpdateView):
-    template_name = 'service_manager/supervisor/host/change.html'
+    template_name = 'service_manager/accounts/supervisor/host/change.html'
     model = SupervisorConfig
     form_class = SupervisorConfigForm
     success_url = reverse_lazy('accounts:supervisor-host-index')
@@ -420,7 +441,7 @@ def deal_ansible_res(res, host):
 
 
 class AnsibleHostIndexView(LoginRequiredMixin, ListView):
-    template_name = 'service_manager/ansible/host/index.html'
+    template_name = 'service_manager/accounts/ansible/host/index.html'
     model = AnsibleConfig
     paginate_by = 20
     ordering = 'create_time'
@@ -460,7 +481,7 @@ class AnsibleHostIndexView(LoginRequiredMixin, ListView):
             owner_id=request.user.pk).filter(
             id__in=selected_actions)
         return render(request,
-                      'service_manager/ansible/host/multi_delete.html',
+                      'service_manager/accounts/ansible/host/multi_delete.html',
                       locals())
 
 
@@ -505,19 +526,19 @@ class AnsibleRunModule(LoginRequiredMixin, ListView):
 
 
 class AnsibleHostAddView(LoginRequiredMixin, CreateView):
-    template_name = 'service_manager/ansible/host/add.html'
+    template_name = 'service_manager/accounts/ansible/host/add.html'
     form_class = AnsibleConfigForm
     success_url = reverse_lazy('accounts:ansible-host-index')
 
 
 class AnsibleHostDeleteView(LoginRequiredMixin, DeleteView):
-    template_name = 'service_manager/ansible/host/delete.html'
+    template_name = 'service_manager/accounts/ansible/host/delete.html'
     model = AnsibleConfig
     success_url = reverse_lazy('accounts:ansible-host-index')
 
 
 class AnsibleHostChangeView(LoginRequiredMixin, UpdateView):
-    template_name = 'service_manager/ansible/host/change.html'
+    template_name = 'service_manager/accounts/ansible/host/change.html'
     model = AnsibleConfig
     form_class = AnsibleConfigForm
     success_url = reverse_lazy('accounts:ansible-host-index')
